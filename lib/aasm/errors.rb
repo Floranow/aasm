@@ -5,10 +5,15 @@ module AASM
   class InvalidTransition < RuntimeError
     attr_reader :object, :event_name, :originating_state, :failures, :state_machine_name
 
-    def initialize(object, event_name, state_machine_name, failures = [])
+    def initialize(object, event_name, state_machine_name, failures = [], custom_message = nil)
       @object, @event_name, @originating_state, @failures = object, event_name, object.aasm(state_machine_name).current_state, failures
       @state_machine_name = state_machine_name
-      super("Event '#{event_name}' cannot transition from '#{originating_state}'.#{reasoning}")
+      if custom_message
+        super(custom_message)
+      else
+        super("Event '#{event_name}' cannot transition from '#{originating_state}'.#{reasoning}")
+      end
+
     end
 
     def reasoning
